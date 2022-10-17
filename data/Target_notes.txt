@@ -1,0 +1,82 @@
+Run Notes:
+
+1. 
+- Completed WFT subtractions at 0934
+-- 1_subrtact_WF.pdf
+-- Pulls out the noise in the radar and subtracts it from the results (?) Confirm with someone
+
+2. Calibration on 750 Cal
+-- 2_cyl750_cal.pdf
+-- jpegs not saving (?)
+
+3. Calibration on 900 cal
+-- have photo
+-- 3_cyl_900_cal.pdf
+
+4. Cyl mount 
+-- have photo
+-- 4_cyl_mount.pdf
+
+5. Target Mount
+-- Using same mount for all i hope
+-- 5_tar_mount.pdf
+-- starting POS 0.000
+-- have photo
+-- Looks fairly stable on the uncal'd chart over angle
+
+6. Mini arrow target
+-- using target mount from 5
+-- have photo
+-- starting at 0.000
+
+7. Missile: nose 1
+-- changing scan velocity from 0.235 to 0.220 to minimize motion on msl
+-- msl was leveled by placing a 360 bubble on the nearest tail fin
+-- msl must not be moved from test to test as much as possible
+-- msl is placed at an azmuthal offset so that it seats cleanly in the mount
+-- not zeroed!!! Must shift data (Should only be a few degrees though)
+
+8. Missile: nose 2
+-- Photo of missile and leveled fin
+-- shifted missile body to level
+-- Not zeroed!!! Must shift data
+
+9. Missile: nose 3
+-- Photo of missile and leveled fin
+-- zeroed azimuth
+-- radar temp == 68 deg F
+-- Target appears to be roughly 33 degrees off center
+
+10. Missile: nose 3
+-- Redoing this measurement since i left the level on the fin!!!
+-- same info as 9
+-- did not zero az
+
+11. Missile: nose 4
+-- Rounded nose
+-- did not zero az
+
+12. Missile: nose 5
+- semi-rounded nose
+- did not zero az
+
+13. Cal mount 2
+-- second round measuring cal mount
+-- Do not use. Use mount measurement in 16
+
+14. Cal cyl750
+-- moved mount. need to reshoot mount. 
+
+15. Cal cyl900
+-- 
+
+16. Cal mount
+
+
+Targets:
+- Mini arrow
+- F-15?
+- Other jets?
+- missile: nose 1, nose 2, nose 3?
+- B-2 planform
+- 

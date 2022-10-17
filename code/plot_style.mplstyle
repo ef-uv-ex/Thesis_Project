@@ -1,0 +1,18 @@
+### Font Properties
+font.family : sans-serif
+
+### Axes properties
+axes.titlesize : 24
+axes.labelsize : 20
+axes.labelpad : 10
+
+### Color cycler
+axes.prop_cycle: cycler(
+            'color', [ '003f5c', '2f4b7c', '665191', 'a05195', 'd45087', 'f95d6a', 'ff7c43', 'ffa600']
+            )
+
+### Line properties
+lines.linewidth : 3
+lines.markersize : 10
+xtick.labelsize : 16
+ytick.labelsize : 16

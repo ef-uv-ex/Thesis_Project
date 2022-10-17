@@ -1,0 +1,61 @@
+clc;
+clear all;
+close all;
+
+format = 'yyyymmdd';
+t = datestr(now, format);
+
+% Move directory
+
+
+RCS_CLIM = [-60,20];
+
+%% Import and organize data
+
+cd("G:\Rofrano_Thesis\Thesis_Data\18Aug22");
+cyl750_cbk = readLintek('cyl750.cbk');
+cyl750 = readLintek('cyl750.cal');
+cyl_750_exact = load('cyl750.mat').cyl750;
+tar_cbk = readLintek('target.bkg');
+tar_nocal = readLintek('target_arrow.tar');
+
+%% Calibrate
+
+tar_cal = calibrateRCS(tar_nocal, tar_cbk, cyl750, cyl750_cbk, cyl_750_exact);
+
+
+%% Save the thing
+
+filename = strcat(t, '_arrow_16');
+save(filename, 'tar_cal');
+
+%% Produce Plots
+close('all')
+
+% Plot global RCS
+plotGlobalRCS(tar_cal, 'caxis',RCS_CLIM);
+plotGlobalRCS(tar_cal, 'caxis',RCS_CLIM);
+
+% Plot RCS cuts in polar format
+tar_cal_7 = extractData(tar_cal, 'frq', 7);
+plotRCS(tar_cal_7, 'polar', 'copol', 'caxis',RCS_CLIM);
+plotRCS(tar_cal_7, 'copol', 'caxis',RCS_CLIM);
+
+
+%% Load the FEKO data
+
+cd("G:\Rofrano_Thesis\RCS_Targets\mini_arrow");
+tar_true = readFeko('mini_arrow_20220823.ffe')
+
+% Plot global RCS
+plotGlobalRCS(tar_true, 'caxis',RCS_CLIM);
+plotGlobalRCS(tar_true, 'caxis',RCS_CLIM);
+
+% Plot RCS cuts in polar format
+tar_true_7 = extractData(tar_cal, 'frq', 7);
+plotRCS(tar_true_7, 'polar', 'copol', 'caxis',RCS_CLIM);
+plotRCS(tar_true_7, 'copol', 'caxis',RCS_CLIM);
+
+
+
+
