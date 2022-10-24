@@ -2,16 +2,12 @@
 """
 Created on Tue Sep 27 12:51:50 2022
 
-- I am using this code to practice building CNNs using the Keras functional API
-- Goals:
-    - Understand how the functional API coding style works
-    - Understand the basic layers
-    - Understand how to shape and input data to the model
-    - Understand how to build the architecture of the model
-    - Understand how to compile the model
-    - Understand how to read the outputs of the model
-    - Understand the results
-    - Understand how to tune the model
+Current Model:
+
+VGG19 -- Deep convolutional Neural Network
+- Changing to VGG 19 model Neural netork
+- Will be using the nose-1 data only
+- Likely to switch to single fuselage categories
 
 @author: Administrator
 """
@@ -21,9 +17,6 @@ import numpy as np
 import pickle as pkl
 
 
-
-# y_train = keras.utils.to_categorical(y_train)
-# y_test = keras.utils.to_categorical(y_test)
 # Import training data
 target_file = r'G:\Rofrano_Thesis\Project\data\Sim_Data_13Oct22.obj'
 file = open(target_file, 'rb')
@@ -49,57 +42,165 @@ yt = meas_data[:, -1, 0].astype('uint32')
 # Train/Test split
 num_classes = len(np.unique(y))
 x_train = X  # [:60000]; can use the full set
-y_train = keras.utils.to_categorical(y)
+y_train = y  #keras.utils.to_categorical(y)
 
 x_test = Xt  # X[60000:]; can use the full set
-y_test = keras.utils.to_categorical(yt)
+y_test = yt  #keras.utils.to_categorical(yt)
 
 x_max = np.max(X)
 
 """ Convolutional Neural Net Model is called functionally"""
+# Set the optimizers paramters
 
+
+# Hyperparameter settings
+LR = 0.001  # Learning rate
+M = 0.9  # Momentum
+DR = 0.5  # Dropout rate
+BS = 300  # Batch Size
+E = 100  # Epochs
+#OPTIMIZER = SGD
+
+adam = tf.keras.optimizers.Adam(
+    learning_rate=LR,  # Default = 0.001
+    beta_1=0.9,  # Default = 0.9
+    beta_2=0.999,  # Default = 0.999
+    epsilon=1e-07,  #
+    amsgrad=False,
+    name='Adam'
+)
+
+SGD = tf.keras.optimizers.SGD(
+    learning_rate=LR,  # Default = 0.01
+    momentum=M,  # Default = 0.0
+    nesterov=False,  # Default = False
+    name='SGD'
+)
+OPTIMIZER = SGD
 
 def make_model(input_shape):
     input_layer = keras.layers.Input(input_shape)  # Define input tenosr shape
 
     """  First conv layer """
-    conv1 = keras.layers.Conv1D(filters=64,  # 64 Filters per channel
-                                kernel_size=3,  # Convolution of 3 segments
-                                activation='relu',  # Relu activation
-                                padding='same',  # Place zeros evenly on the left and right
+    conv1 = keras.layers.Conv1D(filters=64,
+                                kernel_size=3,
+                                activation='relu',
+                                padding='same',
                                 )(input_layer)
 
-    conv1 = keras.layers.MaxPooling1D(pool_size=2,  # Grab two adjacent conv products and pull max
-                                      strides=2  # Move in strides of 2 to a new pair, halving the original input
+    conv1 = keras.layers.Conv1D(filters=64,
+                                kernel_size=3,
+                                activation='relu',
+                                padding='same',
+                                )(conv1)
+
+    conv1 = keras.layers.MaxPooling1D(pool_size=2,
+                                      strides=2
                                       )(conv1)
 
     """ Second conv layer"""
-    conv2 = keras.layers.Conv1D(filters=128,  # Increase network size for more features
-                                kernel_size=3,  # Convolution of 3 segments
-                                activation='relu',  # Relu activation
-                                padding='same',  # Place zeros evenly on the left and right
+    conv2 = keras.layers.Conv1D(filters=128,
+                                kernel_size=3,
+                                activation='relu',
+                                padding='same',
                                 )(conv1)
+    conv2 = keras.layers.Conv1D(filters=128,
+                                kernel_size=3,
+                                activation='relu',
+                                padding='same',
+                                )(conv2)
 
-    conv2 = keras.layers.MaxPooling1D(pool_size=2,  # Grab two adjacent conv products and pull max
-                                      strides=2  # Move in strides of 2 to a new pair, halving the original input
+    conv2 = keras.layers.MaxPooling1D(pool_size=2,
+                                      strides=2
                                       )(conv2)
 
     """ Third Conv layer"""
-    conv3 = keras.layers.Conv1D(filters=256,  # Increase network size for more features
-                                kernel_size=3,  # Convolution of 3 segments
-                                activation='relu',  # Relu activation
-                                padding='same',  # Place zeros evenly on the left and right
+    conv3 = keras.layers.Conv1D(filters=256,
+                                kernel_size=3,
+                                activation='relu',
+                                padding='same',
                                 )(conv2)
-
-    conv3 = keras.layers.MaxPooling1D(pool_size=2,  # Grab two adjacent conv products and pull max
-                                      strides=2  # Move in strides of 2 to a new pair, halving the original input
+    conv3 = keras.layers.Conv1D(filters=256,
+                                kernel_size=3,
+                                activation='relu',
+                                padding='same',
+                                )(conv3)
+    conv3 = keras.layers.Conv1D(filters=256,
+                                kernel_size=3,
+                                activation='relu',
+                                padding='same',
+                                )(conv3)
+    conv3 = keras.layers.Conv1D(filters=256,
+                                kernel_size=3,
+                                activation='relu',
+                                padding='same',
+                                )(conv3)
+    conv3 = keras.layers.MaxPooling1D(pool_size=2,
+                                      strides=2
                                       )(conv3)
 
+    """ Fourth Conv layer"""
+    conv4 = keras.layers.Conv1D(filters=512,
+                                kernel_size=3,
+                                activation='relu',
+                                padding='same',
+                                )(conv3)
+    conv4 = keras.layers.Conv1D(filters=512,
+                                kernel_size=3,
+                                activation='relu',
+                                padding='same',
+                                )(conv4)
+    conv4 = keras.layers.Conv1D(filters=512,
+                                kernel_size=3,
+                                activation='relu',
+                                padding='same',
+                                )(conv4)
+    conv4 = keras.layers.Conv1D(filters=512,
+                                kernel_size=3,
+                                activation='relu',
+                                padding='same',
+                                )(conv4)
+    conv4 = keras.layers.MaxPooling1D(pool_size=2,
+                                      strides=2
+                                      )(conv4)
+    """ Fifth Conv layer"""
+    conv5 = keras.layers.Conv1D(filters=512,
+                                kernel_size=3,
+                                activation='relu',
+                                padding='same',
+                                )(conv4)
+    conv5 = keras.layers.Conv1D(filters=512,
+                                kernel_size=3,
+                                activation='relu',
+                                padding='same',
+                                )(conv5)
+    conv5 = keras.layers.Conv1D(filters=512,
+                                kernel_size=3,
+                                activation='relu',
+                                padding='same',
+                                )(conv5)
+    conv5 = keras.layers.Conv1D(filters=512,
+                                kernel_size=3,
+                                activation='relu',
+                                padding='same',
+                                )(conv5)
+    conv5 = keras.layers.MaxPooling1D(pool_size=2,
+                                      strides=2
+                                      )(conv5)
+
     """ Output """
-    output = keras.layers.Flatten()(conv3)
-    output = keras.layers.Dense(1024, activation="relu")(output)
-    output = keras.layers.Dense(512, activation="relu")(output)
-    output = keras.layers.Dense(256, activation="relu")(output)
+    output = keras.layers.Flatten()(conv5)
+    output = keras.layers.Dense(4096,
+                                activity_regularizer=keras.regularizers.L2(5e-4),
+                                activation="relu")(output)
+    output = keras.layers.Dropout(DR)(output)
+    output = keras.layers.Dense(4095,
+                                activity_regularizer=keras.regularizers.L2(5e-4),
+                                activation="relu")(output)
+    output = keras.layers.Dropout(DR)(output)
+    output = keras.layers.Dense(1000,
+                                activity_regularizer=keras.regularizers.L2(5e-4),
+                                activation="relu")(output)
     output_layer = keras.layers.Dense(num_classes, activation='softmax')(output)
 
     return keras.models.Model(inputs=input_layer, outputs=output_layer)
@@ -107,12 +208,13 @@ def make_model(input_shape):
 
 model = make_model(input_shape=x_train.shape[1:])  # Calls the shape excluding the sample size
 model.summary()
-keras.utils.plot_model(model, "Simple_NN_model.png", show_shapes=True)
+keras.utils.plot_model(model, "VGG_19.png", show_shapes=True)
+
 
 # %% Compile the model
 model.compile(
-    optimizer="adam",  # Stochastic Gradient Descent using Adam
-    loss="categorical_crossentropy",
+    optimizer=OPTIMIZER,  # Stochastic Gradient Descent using Adam
+    loss="sparse_categorical_crossentropy",
     metrics=["accuracy"]
 )
 
@@ -122,8 +224,8 @@ my_callbacks = [
 ]
 
 history = model.fit(x_train, y_train,
-                    batch_size=32,
-                    epochs=100,
+                    batch_size=BS,
+                    epochs=E,
                     callbacks=my_callbacks,
                     validation_split=0.2  # pull 20% of the data for validation
                     )
@@ -132,3 +234,25 @@ history = model.fit(x_train, y_train,
 test_scores = model.evaluate(x_test, y_test, verbose=2)
 print("Test loss:", test_scores[0])
 print("Test accuracy:", test_scores[1])
+
+y_pred = model.predict(x_test)
+
+matrix = tf.math.confusion_matrix(y_test, np.argmax(y_pred, axis=1))
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+plt.style.use('rad_style')  # Save in the 'stylelib' folder in '.matplotlib' of C: directory
+
+ax = plt.axes()
+label_count=len(np.unique(y_test))
+categories=['nose-1', 'body_left', 'tail', 'body_right']
+cfm = sns.heatmap(matrix/np.sum(matrix), annot=True, fmt='.2%', cmap='Blues',
+            xticklabels=categories,
+            yticklabels=categories,
+            ax = ax)
+
+ax.set_title("Confusion Matrix \n labels="+str(label_count)
+          +", Batch Size="+str(BS)+',\n Learning Rate='+str(LR)
+          +", Momentum="+str(M))
+
+
